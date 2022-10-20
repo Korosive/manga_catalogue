@@ -9,12 +9,19 @@
 	<meta name="author" content="Eddie Taing"/>
 	<meta name="description" content="Manga Tracker" />
 	<link rel="stylesheet" type="text/css" href="style.css" />
-	<title>Home Page</title>
+	<title>Search Database Page</title>
 </head>
 <?php
 	include "nav.php";
 ?>
 <body>
+	<?php
+		if (isset($_SESSION['message']))
+		{
+			echo "<p>" . $_SESSION['message'] . "</p>";
+			unset($_SESSION['message']);
+		}
+	?>
 	<h1>Search Database</h1>
 	<form method="get" action="search.php">
 		<input type="text" name="title" id="title" />
@@ -63,6 +70,7 @@
 	    		<th>Author</th>
 	    		<th>Original Run</th>
 	    		<th>Status</th>
+	    		<th>Add To List</th>
 	    	</tr>";
 			foreach ($searchresults as $result)
 			{
@@ -89,6 +97,7 @@
 				
 				echo "</td>";
 				echo "<td>" . $result->status . "</td>";
+				echo "<td><a href='add_manga.php?mal_id=" . $result->mal_id . "'>Add To List</a></td>";
 				echo "</tr>";
 			}
 		}
