@@ -11,9 +11,23 @@
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<title>Home Page</title>
 </head>
+<?php
+	include "nav.php";
+?>
 <body>
+	
 	<h1>Home Page</h1>
+	<h2>My Manga List</h2>
 	<?php
+		/*
+		$api_url = "https://api.jikan.moe/v4/manga";
+		$json_data = file_get_contents($api_url);
+		$response_data = json_decode($json_data);
+		$data = $response_data->data;
+		foreach ($data as $d) {
+			echo "<p>" . $d->title . " | Published from " . substr($d->published->from, 0, strpos($d->published->from, "T")) . " to " . substr($d->published->to, 0, strpos($d->published->to, "T")) . "</p>";
+		}
+		*/
 		if (isset($_SESSION['message']))
 		{
 			echo "<p>" . $_SESSION['message'] . "</p>";
