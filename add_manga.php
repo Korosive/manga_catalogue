@@ -1,5 +1,5 @@
 <?php
-	echo "hello";
+	session_start();
 	if (isset($_POST['add']))
 	{
 		if (isset($_POST['eng_name']) && isset($_POST['jp_name']) && isset($_POST['author']) && isset($_POST['run_start']) && 
@@ -27,14 +27,16 @@
 
 			if ($insertresult === TRUE)
 			{
-				echo "yes";
+				$_SESSION['message'] = "Successfully added manga.";
 			}
 			else
 			{
-				echo $conn->error;
+				$_SESSION['message'] = "Failed to add manga.";
 			}
 
 			$conn->close();
+
+			header("location: index.php");
 		}
 		else
 		{

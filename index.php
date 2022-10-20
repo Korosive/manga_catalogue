@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,9 +13,15 @@
 </head>
 <body>
 	<h1>Home Page</h1>
+	<?php
+		if (isset($_SESSION['message']))
+		{
+			echo "<p>" . $_SESSION['message'] . "</p>";
+			unset($_SESSION['message']);
+		}
+	?>
 	<form method="get" action="index.php">
 		<input type="text" name="title" id="title" />
-		<br/>
 		<input type="submit" name="Search" />
 	</form>
 	<?php
@@ -69,8 +78,8 @@
 	    				echo "<td>" . $row['eng_name'] . "</td>";
 	    				echo "<td>" . $row['jp_name'] . "</td>";
 	    				echo "<td>" . $row['author'] . "</td>";
-	    				echo "<td>" . $row['run_start'] . " - " . $row['run_end'] . "</td>";
-	    				echo "<td>" . $row['read_start'] . " - " . $row['read_end'] . "</td>";
+	    				echo "<td>" . date("d/m/Y", strtotime($row['run_start'])) . " - " . date("d/m/Y", strtotime($row['run_end'])) . "</td>";
+	    				echo "<td>" . date("d/m/Y", strtotime($row['read_start'])) . " - " . date("d/m/Y", strtotime($row['read_end']))  . "</td>";
 	    				echo "<td>" . $row['read_state'] . "</td>";
 	    				echo "</tr>";
 	    			}
@@ -121,8 +130,8 @@
 	    			echo "<td>" . $row['eng_name'] . "</td>";
 	    			echo "<td>" . $row['jp_name'] . "</td>";
 	    			echo "<td>" . $row['author'] . "</td>";
-	    			echo "<td>" . $row['run_start'] . " - " . $row['run_end'] . "</td>";
-	    			echo "<td>" . $row['read_start'] . " - " . $row['read_end'] . "</td>";
+	    			echo "<td>" . date("d/m/Y", strtotime($row['run_start'])) . " - " . date("d/m/Y", strtotime($row['run_end'])) . "</td>";
+	    			echo "<td>" . date("d/m/Y", strtotime($row['read_start'])) . " - " . date("d/m/Y", strtotime($row['read_end'])) . "</td>";
 	    			echo "<td>" . $row['read_state'] . "</td>";
 	    			echo "</tr>";
 	    		}
@@ -137,6 +146,7 @@
 		}
 	?>
 
+	<h2>Add A New Manga</h2>
 	<form method="POST" action="add_manga.php">
 		<label for="eng_name">English Name: </label>
 		<input type="text" name="eng_name" id="eng_name" />
