@@ -15,19 +15,9 @@
 	include "nav.php";
 ?>
 <body>
-	
 	<h1>Home Page</h1>
 	<h2>My Manga List</h2>
 	<?php
-		/*
-		$api_url = "https://api.jikan.moe/v4/manga";
-		$json_data = file_get_contents($api_url);
-		$response_data = json_decode($json_data);
-		$data = $response_data->data;
-		foreach ($data as $d) {
-			echo "<p>" . $d->title . " | Published from " . substr($d->published->from, 0, strpos($d->published->from, "T")) . " to " . substr($d->published->to, 0, strpos($d->published->to, "T")) . "</p>";
-		}
-		*/
 		if (isset($_SESSION['message']))
 		{
 			echo "<p>" . $_SESSION['message'] . "</p>";
@@ -40,6 +30,7 @@
 	</form>
 	<?php
 		require_once 'settings.php';
+		$searchresults = array();
 		if (isset($_GET['title']))
 		{
 			$title = $_GET['title'];
@@ -77,31 +68,10 @@
 
 	    		if ($searchresult->num_rows > 0)
 	    		{
-	    			echo "<table>";
-	    			echo "<tr>
-	    				<th>English Name</th>
-	    				<th>Japanese Name</th>
-	    				<th>Author</th>
-	    				<th>Original Run</th>
-	    				<th>Read Date</th>
-	    				<th>Current State</th>
-	    			</tr>";
 	    			while($row = $searchresult->fetch_assoc())
 	    			{
-	    				echo "<tr>";
-	    				echo "<td>" . $row['eng_name'] . "</td>";
-	    				echo "<td>" . $row['jp_name'] . "</td>";
-	    				echo "<td>" . $row['author'] . "</td>";
-	    				echo "<td>" . date("d/m/Y", strtotime($row['run_start'])) . " - " . date("d/m/Y", strtotime($row['run_end'])) . "</td>";
-	    				echo "<td>" . date("d/m/Y", strtotime($row['read_start'])) . " - " . date("d/m/Y", strtotime($row['read_end']))  . "</td>";
-	    				echo "<td>" . $row['read_state'] . "</td>";
-	    				echo "</tr>";
+	    				$searchresults[] = $row;
 	    			}
-	    			echo "</table>";
-	    		}
-	    		else
-	    		{
-	    			echo "<p>No results with that search</p>";
 	    		}
 
 	    		$conn->close();
@@ -114,6 +84,13 @@
 		else
 		{
 			$conn = new mysqli($host, $user, $pswd, $db);
+
+			//Check if error with connection
+	        if ($conn->connect_errno)
+	        {
+	            echo "<p>Failed to connect to database: " . $conn->connect_error . "</p>";
+	            exit();
+	        }
 
 			$tablequery = "CREATE TABLE IF NOT EXISTS mangas(
 	            record_id INT NOT NULL AUTO_INCREMENT,
@@ -136,61 +113,37 @@
 
 			if ($searchresult->num_rows > 0)
 	    	{
-	    		echo "<table>";
-	    		echo "<tr><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Read Date</th><th>Current State</th></tr>";
 	    		while($row = $searchresult->fetch_assoc())
 	    		{
-	    			echo "<tr>";
-	    			echo "<td>" . $row['eng_name'] . "</td>";
-	    			echo "<td>" . $row['jp_name'] . "</td>";
-	    			echo "<td>" . $row['author'] . "</td>";
-	    			echo "<td>" . date("d/m/Y", strtotime($row['run_start'])) . " - " . date("d/m/Y", strtotime($row['run_end'])) . "</td>";
-	    			echo "<td>" . date("d/m/Y", strtotime($row['read_start'])) . " - " . date("d/m/Y", strtotime($row['read_end'])) . "</td>";
-	    			echo "<td>" . $row['read_state'] . "</td>";
-	    			echo "</tr>";
+	    			$searchresults[] = $row;
+	    			
 	    		}
-	    		echo "</table>";
-	    	}
-	    	else
-	    	{
-	    		echo "<p>No manga to display</p>";
 	    	}
 
 			$conn->close();
 		}
-	?>
 
-	<h2>Add A New Manga</h2>
-	<form method="POST" action="add_manga.php">
-		<label for="eng_name">English Name: </label>
-		<input type="text" name="eng_name" id="eng_name" />
-		<br/>
-		<label for="jp_name">Japanese Name: </label>
-		<input type="text" name="jp_name" id="jp_name" />
-		<br/>
-		<label for="author">Author: </label>
-		<input type="text" name="author" id="author" />
-		<br/>
-		<label for="run_start">Run Start: </label>
-		<input type="date" name="run_start" id="run_start" />
-		<br/>
-		<label for="run_end">Run End: </label>
-		<input type="date" name="run_end" id="run_end" />
-		<br/>
-		<label for="read_start">Read Start: </label>
-		<input type="date" name="read_start" id="read_start" />
-		<br/>
-		<label for="read_end">Read End: </label>
-		<input type="date" name="read_end" id="read_end" />
-		<br/>
-		<label for="read_state">Read State: </label>
-		<select id="read_state" name="read_state">
-			<option value="reading">Reading</option>
-			<option value="stopped">Stopped</option>
-			<option value="finished">Finished</option>
-		</select>
-		<br/>
-		<input type="submit" name="add" />
-	</form>
+		if (sizeof($searchresults) > 0)
+		{
+			echo "<table>";
+	    	echo "<tr><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Read Date</th><th>Current State</th></tr>";
+	    	foreach ($searchresults as $result) {
+				echo "<tr>";
+		    	echo "<td>" . $result['eng_name'] . "</td>";
+		    	echo "<td>" . $result['jp_name'] . "</td>";
+		    	echo "<td>" . $result['author'] . "</td>";
+		    	echo "<td>" . date("d/m/Y", strtotime($result['run_start'])) . " - " . date("d/m/Y", strtotime($result['run_end'])) . "</td>";
+		    	echo "<td>" . date("d/m/Y", strtotime($result['read_start'])) . " - " . date("d/m/Y", strtotime($result['read_end'])) . "</td>";
+		    	echo "<td>" . $result['read_state'] . "</td>";
+		    	echo "</tr>";
+			}
+			echo "</table>";
+		}
+		else
+		{
+			echo "<p>No manga</p>";
+		}
+		
+	?>
 </body>
 </html>
