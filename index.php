@@ -54,8 +54,6 @@
 	            	author VARCHAR(30) NOT NULL,
 	            	run_start DATE NOT NULL,
 	            	run_end DATE,
-	            	read_start DATE NOT NULL,
-	            	read_end DATE,
 	            	read_state VARCHAR(20) NOT NULL,
 	            	PRIMARY KEY (record_id)
 	        	);";
@@ -99,8 +97,6 @@
 	            author VARCHAR(30) NOT NULL,
 	            run_start DATE NOT NULL,
 	            run_end DATE,
-	            read_start DATE NOT NULL,
-	            read_end DATE,
 	            read_state VARCHAR(20) NOT NULL,
 	            PRIMARY KEY (record_id)
 	        );";
@@ -133,16 +129,6 @@
 		    	echo "<td>" . $result['jp_name'] . "</td>";
 		    	echo "<td>" . $result['author'] . "</td>";
 		    	echo "<td>" . date("d/m/Y", strtotime($result['run_start'])) . " - " . date("d/m/Y", strtotime($result['run_end'])) . "</td>";
-		    	echo "<td>" . date("d/m/Y", strtotime($result['read_start'])) . " - "; 
-		    	if ($result['read_end'] == NULL || $result == "")
-		    	{
-		    		echo "Today";
-		    	}
-		    	else
-		    	{
-		    		echo date("d/m/Y", strtotime($result['read_end']));
-		    	}
-		    	echo "</td>";
 		    	echo "<td>" . $result['read_state'] . "</td>";
 		    	echo "</tr>";
 			}

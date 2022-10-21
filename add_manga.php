@@ -30,8 +30,8 @@
 			
 		$read_start = date("Y-m-d");
 		$read_state = "reading";
-		$insertquery = "INSERT INTO mangas (eng_name, jp_name, author, run_start, run_end, read_start, read_end, read_state) VALUES
-			('$eng_name', '$jp_name', '$author', '$run_start', '$run_end', '$read_start', NULL, '$read_state')";
+		$insertquery = "INSERT INTO mangas (eng_name, jp_name, author, run_start, run_end, read_state) VALUES
+			('$eng_name', '$jp_name', '$author', '$run_start', '$run_end', '$read_state')";
 
 
 		if ($conn->query($insertquery)=== TRUE)

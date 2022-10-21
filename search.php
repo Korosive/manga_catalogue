@@ -28,6 +28,14 @@
 		<input type="submit" name="Search" />
 	</form>
 	<?php
+		if (isset($_GET['page']))
+		{
+			$page = $_GET['page'];
+		}
+		else
+		{
+			header("location: search.php?page=1");
+		}
 		/*
 			API = https://docs.api.jikan.moe/#tag/manga/operation/getMangaSearch
 			How to read APIs in PHP = https://tutorialsclass.com/php-rest-api-file_get_contents/
@@ -42,12 +50,12 @@
 		if (isset($_GET['title']))
 		{
 			$title = $_GET['title'];
-			$api_url = "https://api.jikan.moe/v4/manga?letter=$title";
+			$api_url = "https://api.jikan.moe/v4/manga?letter=$title&limit=10&page=$page";
 			
 		}
 		else
 		{
-			$api_url = "https://api.jikan.moe/v4/manga";
+			$api_url = "https://api.jikan.moe/v4/manga?limit=10&page=$page";
 		}
 
 		$json_data = file_get_contents($api_url);
@@ -105,6 +113,13 @@
 		{
 			echo "<p>No search results.</p>";
 		}
+
+		if ($page > 1)
+		{
+			echo "<a href='search.php?page=" . ($page - 1) . "'>Previous Page</a>";
+		}
+
+		echo "<a href='search.php?page=" . ($page + 1) . "'>Next Page</a>";
 	?>
 </body>
 </html>
