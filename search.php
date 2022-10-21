@@ -146,12 +146,18 @@
 			echo "<p>No search results.</p>";
 		}
 
+		$pagination = $response_data->pagination;
+
 		if ($page > 1)
 		{
 			echo "<a href='search.php?page=" . ($page - 1) . "'>Previous Page</a>";
 		}
 
-		echo "<a href='search.php?page=" . ($page + 1) . "'>Next Page</a>";
+		if ($pagination->has_next_page == TRUE && $page < $pagination->items->total)
+		{
+			echo "<a href='search.php?page=" . ($page + 1) . "'>Next Page</a>";
+		}
+		
 	?>
 </body>
 </html>
