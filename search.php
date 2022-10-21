@@ -25,7 +25,7 @@
 	<h1>Search Database</h1>
 	<form method="get" action="search.php">
 		<input type="text" name="title" id="title" />
-		<input type="submit" name="Search" />
+		<input type="submit" name="Search" value="Search" />
 	</form>
 	<?php
 		if (isset($_GET['page']))
@@ -88,24 +88,56 @@
 				echo "<td>" . $result->title_japanese . "</td>";
 				echo "<td>";
 
-				foreach ($result->authors as $author) {
-					echo $author->name;
+				$mangaauthor = "";
+				if (count($result->authors) > 1)
+				{
+					for ($i=0; $i < count($result->authors); $i++) 
+					{ 
+						if ($i == count($result->authors) - 1)
+						{
+							$mangaauthor .= $result->authors[$i]->name;
+						}
+						else
+						{
+							$mangaauthor .= $result->authors[$i]->name . " & ";
+						}
+					}
 				}
+				else
+				{
+					$mangaauthor .= $result->authors[0]->name;
+				}
+				
+				echo $mangaauthor;
 
 				echo "</td>";
 				echo "<td>" . substr($result->published->from, 0, strpos($result->published->from, "T")) . " to ";
 				if ($result->published->to != "")
 				{
 					echo substr($result->published->to, 0, strpos($result->published->to, "T"));
+					$run_end = substr($result->published->to, 0, strpos($result->published->to, "T"));
 				}
 				else
 				{
-					echo " Today";
+					echo " ?";
+					$run_end = NULL;
 				}
+
+				$mal_id = $result->mal_id;
 				
 				echo "</td>";
 				echo "<td>" . $result->status . "</td>";
-				echo "<td><a href='add_manga.php?mal_id=" . $result->mal_id . "'>Add To List</a></td>";
+				echo "<td>";
+				echo "<form method='POST' action='add_manga.php'>";
+				echo "<input type='hidden' name='mal_id' id='mal_id' value='" . $result->mal_id . "'/>";
+				echo "<input type='hidden' name='eng_name' id='eng_name' value='" . $result->title . "'/>";
+				echo "<input type='hidden' name='jp_name' id='jp_name' value='" . $result->title_japanese . "'/>";
+				echo "<input type='hidden' name='author' id='author' value='" . $mangaauthor . "'/>";
+				echo "<input type='hidden' name='run_start' id='run_start' value='" . substr($result->published->from, 0, strpos($result->published->from, "T")) . "'/>";
+				echo "<input type='hidden' name='run_end' id='run_end' value='" . $run_end . "'/>";
+				echo "<input type='submit' value='Add To List'/>";
+				echo "</form>";
+				echo "</td>";
 				echo "</tr>";
 			}
 		}

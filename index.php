@@ -49,6 +49,7 @@
 
 	            $tablequery = "CREATE TABLE IF NOT EXISTS mangas(
 	            	record_id INT NOT NULL AUTO_INCREMENT,
+	            	mal_id INT NOT NULL,
 	            	eng_name VARCHAR(100) NOT NULL,
 	            	jp_name VARCHAR(100) NOT NULL,
 	            	author VARCHAR(30) NOT NULL,
@@ -92,6 +93,7 @@
 
 			$tablequery = "CREATE TABLE IF NOT EXISTS mangas(
 	            record_id INT NOT NULL AUTO_INCREMENT,
+	            mal_id INT NOT NULL,
 	            eng_name VARCHAR(100) NOT NULL,
 	            jp_name VARCHAR(100) NOT NULL,
 	            author VARCHAR(30) NOT NULL,
@@ -122,7 +124,7 @@
 		if (sizeof($searchresults) > 0)
 		{
 			echo "<table>";
-	    	echo "<tr><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Read Date</th><th>Current State</th></tr>";
+	    	echo "<tr><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Current State</th></tr>";
 	    	foreach ($searchresults as $result) {
 				echo "<tr>";
 		    	echo "<td>" . $result['eng_name'] . "</td>";
