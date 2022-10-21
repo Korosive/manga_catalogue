@@ -31,7 +31,7 @@
 	<?php
 		require_once 'settings.php';
 		$searchresults = array();
-		//search
+
 		$conn = new mysqli($host, $user, $pswd, $db);
 
 		//Check if error with connection
@@ -99,7 +99,7 @@
 		if (sizeof($searchresults) > 0)
 		{
 			echo "<table>";
-	    	echo "<tr><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Current State</th></tr>";
+	    	echo "<tr><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Current State</th><th>Change Status?</th></tr>";
 	    	foreach ($searchresults as $result) {
 				echo "<tr>";
 		    	echo "<td>" . $result['eng_name'] . "</td>";
@@ -107,6 +107,22 @@
 		    	echo "<td>" . $result['author'] . "</td>";
 		    	echo "<td>" . date("d/m/Y", strtotime($result['run_start'])) . " - " . date("d/m/Y", strtotime($result['run_end'])) . "</td>";
 		    	echo "<td>" . $result['read_state'] . "</td>";
+		    	echo "<td>";
+
+		    	echo "<form method='POST' action='change_status.php'>";
+		    	echo "<input type='hidden' name='record_id' id='record_id' value='" . $result['record_id'] . "'/>";
+		    	echo "<select name='status' id='status'>";
+		    	echo "<option value='Reading'>Reading</option>";
+		    	echo "<option value='Completed'>Completed</option>";
+		    	echo "<option value='On-Hold'>On-Hold</option>";
+		    	echo "<option value='Dropped'>Dropped</option>";
+		    	echo "<option value='Planned To Read'>Planned To Read</option>";
+		    	echo "</select>";
+		    	echo "<br/>";
+		    	echo "<input type='submit' value='Change Status'/>";
+		    	echo "</form>";
+
+		    	echo "</td>";
 		    	echo "</tr>";
 			}
 			echo "</table>";

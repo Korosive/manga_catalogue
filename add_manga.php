@@ -22,7 +22,7 @@
 			$run_start = $_POST['run_start'];
 			$run_end = $_POST['run_end'];
 
-			$read_state = "reading";
+			$read_state = "Reading";
 			$insertquery = "INSERT INTO mangas (mal_id, eng_name, jp_name, author, run_start, run_end, read_state) VALUES
 				($mal_id, '$eng_name', '$jp_name', '$author', '$run_start', '$run_end', '$read_state')";
 
