@@ -31,36 +31,36 @@
 	<?php
 		require_once 'settings.php';
 		$searchresults = array();
+		//search
+		$conn = new mysqli($host, $user, $pswd, $db);
+
+		//Check if error with connection
+	   	if ($conn->connect_errno)
+	    {
+	       	echo "<p>Failed to connect to database: " . $conn->connect_error . "</p>";
+	        exit();
+	   	}
+
+	    $tablequery = "CREATE TABLE IF NOT EXISTS mangas(
+	    	record_id INT NOT NULL AUTO_INCREMENT,
+	        mal_id INT NOT NULL,
+	        eng_name VARCHAR(100) NOT NULL,
+	        jp_name VARCHAR(100) NOT NULL,
+	        author VARCHAR(30) NOT NULL,
+	        run_start DATE NOT NULL,
+	        run_end DATE,
+	        read_state VARCHAR(20) NOT NULL,
+	        PRIMARY KEY (record_id)
+	    );";
+
+	    $conn->query($tablequery);
+	    
 		if (isset($_GET['title']))
 		{
 			$title = $_GET['title'];
 
 			if ($title)
 			{
-				//search
-				$conn = new mysqli($host, $user, $pswd, $db);
-
-				//Check if error with connection
-	            if ($conn->connect_errno)
-	            {
-	                echo "<p>Failed to connect to database: " . $conn->connect_error . "</p>";
-	                exit();
-	            }
-
-	            $tablequery = "CREATE TABLE IF NOT EXISTS mangas(
-	            	record_id INT NOT NULL AUTO_INCREMENT,
-	            	mal_id INT NOT NULL,
-	            	eng_name VARCHAR(100) NOT NULL,
-	            	jp_name VARCHAR(100) NOT NULL,
-	            	author VARCHAR(30) NOT NULL,
-	            	run_start DATE NOT NULL,
-	            	run_end DATE,
-	            	read_state VARCHAR(20) NOT NULL,
-	            	PRIMARY KEY (record_id)
-	        	);";
-
-	        	$conn->query($tablequery);
-
 	        	$searchquery = "SELECT * FROM mangas WHERE eng_name LIKE '%{$title}%' OR jp_name LIKE '%{$title}%'";
 
 	    		$searchresult = $conn->query($searchquery);
@@ -72,8 +72,6 @@
 	    				$searchresults[] = $row;
 	    			}
 	    		}
-
-	    		$conn->close();
 			}
 			else
 			{
@@ -82,29 +80,6 @@
 		}
 		else
 		{
-			$conn = new mysqli($host, $user, $pswd, $db);
-
-			//Check if error with connection
-	        if ($conn->connect_errno)
-	        {
-	            echo "<p>Failed to connect to database: " . $conn->connect_error . "</p>";
-	            exit();
-	        }
-
-			$tablequery = "CREATE TABLE IF NOT EXISTS mangas(
-	            record_id INT NOT NULL AUTO_INCREMENT,
-	            mal_id INT NOT NULL,
-	            eng_name VARCHAR(100) NOT NULL,
-	            jp_name VARCHAR(100) NOT NULL,
-	            author VARCHAR(30) NOT NULL,
-	            run_start DATE NOT NULL,
-	            run_end DATE,
-	            read_state VARCHAR(20) NOT NULL,
-	            PRIMARY KEY (record_id)
-	        );";
-
-	        $conn->query($tablequery);
-
 			$searchquery = "SELECT * FROM `mangas`";
 
 			$searchresult = $conn->query($searchquery);
@@ -117,9 +92,9 @@
 	    			
 	    		}
 	    	}
-
-			$conn->close();
 		}
+
+		$conn->close();
 
 		if (sizeof($searchresults) > 0)
 		{
