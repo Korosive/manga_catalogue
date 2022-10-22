@@ -196,6 +196,14 @@
 				echo "<input type='hidden' name='author' id='author' value='" . $authors . "'/>";
 				echo "<input type='hidden' name='run_start' id='run_start' value='" . $run_start . "'/>";
 				echo "<input type='hidden' name='run_end' id='run_end' value='" . $run_end . "'/>";
+				echo "<select name='status' id='status'>";
+		    	echo "<option value='Reading'>Reading</option>";
+		    	echo "<option value='Completed'>Completed</option>";
+		    	echo "<option value='On-Hold'>On-Hold</option>";
+		    	echo "<option value='Dropped'>Dropped</option>";
+		    	echo "<option value='Planned To Read'>Planned To Read</option>";
+		    	echo "</select>";
+		    	echo "<br/>";
 				echo "<input type='submit' value='Add To List'/>";
 				echo "</form>";
 				echo "</td>";

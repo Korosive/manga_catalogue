@@ -1,6 +1,6 @@
 <?php
 	session_start();
-	if (isset($_POST['mal_id']) && isset($_POST['eng_name']) && isset($_POST['jp_name']) && isset($_POST['author']) && isset($_POST['run_start']) && isset($_POST['run_end']))
+	if (isset($_POST['mal_id']) && isset($_POST['eng_name']) && isset($_POST['jp_name']) && isset($_POST['author']) && isset($_POST['run_start']) && isset($_POST['run_end']) && isset($_POST['status']))
 	{
 		require_once "settings.php";
 		$conn = new mysqli($host, $user, $pswd, $db);
@@ -21,6 +21,7 @@
 			$author = $_POST['author'];
 			$run_start = $_POST['run_start'];
 			$run_end = $_POST['run_end'];
+			$status = $_POST['status'];
 
 			$read_state = "Reading";
 			$insertquery = "INSERT INTO mangas (mal_id, eng_name, jp_name, author, run_start, run_end, read_state) VALUES
