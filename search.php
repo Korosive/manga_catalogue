@@ -16,6 +16,30 @@
 ?>
 <body>
 	<?php
+		if (isset($_GET['page']))
+		{
+			$page = $_GET['page'];
+		}
+		else
+		{
+			$page = 1;
+			//header("location: search.php?page=1");
+		}
+
+		if (isset($_GET['title']))
+		{
+			$title = $_GET['title'];
+			if (strpos($title, " ") !== FALSE)
+			{
+				$title = str_replace(" ", "+", $title);
+			}
+			$api_url = "https://api.jikan.moe/v4/manga?letter=$title&limit=10&page=$page";	
+		}
+		else
+		{
+			$api_url = "https://api.jikan.moe/v4/manga?limit=10&page=$page";
+		}
+
 		if (isset($_SESSION['message']))
 		{
 			echo "<p>" . $_SESSION['message'] . "</p>";
@@ -24,18 +48,29 @@
 	?>
 	<h1>Search Database</h1>
 	<form method="get" action="search.php">
-		<input type="text" name="title" id="title" />
+		<?php
+			if (isset($title))
+			{
+				$inputtitle = "";
+				if (strpos($title, "+"))
+				{
+					$inputtitle = str_replace("+", " ", $title);
+				}
+				else
+				{
+					$inputtitle = $title;
+				}
+				echo "<input type='text' name='title' id='title' value='$inputtitle' />";
+			}
+			else
+			{
+				echo "<input type='text' name='title' id='title' />";
+			}
+		?>
 		<input type="submit" name="Search" value="Search" />
 	</form>
 	<?php
-		if (isset($_GET['page']))
-		{
-			$page = $_GET['page'];
-		}
-		else
-		{
-			header("location: search.php?page=1");
-		}
+		
 		/*
 			API = https://docs.api.jikan.moe/#tag/manga/operation/getMangaSearch
 			How to read APIs in PHP = https://tutorialsclass.com/php-rest-api-file_get_contents/
@@ -47,16 +82,6 @@
 		}
 
 		$searchresults = array();
-		if (isset($_GET['title']))
-		{
-			$title = $_GET['title'];
-			$api_url = "https://api.jikan.moe/v4/manga?letter=$title&limit=10&page=$page";
-			
-		}
-		else
-		{
-			$api_url = "https://api.jikan.moe/v4/manga?limit=10&page=$page";
-		}
 
 		$json_data = file_get_contents($api_url);
 		$response_data = json_decode($json_data);
@@ -84,42 +109,78 @@
 			{
 				echo "<tr>";
 				echo "<td><img src='" . $result->images->jpg->small_image_url . "' alt='Image of manga'/>";
-				echo "<td>" . $result->title . "</td>";
-				echo "<td>" . $result->title_japanese . "</td>";
 				echo "<td>";
 
-				$mangaauthor = "";
-				if (count($result->authors) > 1)
+				if ($result->title != "")
+				{
+					echo $result->title;
+				}
+				else
+				{
+					echo "-";
+				}
+
+				echo "</td>";
+
+				echo "<td>";
+				if ($result->title_japanese != "")
+				{
+					echo $result->title_japanese;
+				}
+				else
+				{
+					echo "-";
+				}
+				echo "</td>";
+
+				echo "<td>";
+				$authors = "";
+				if (count($result->authors) > 1) 
 				{
 					for ($i=0; $i < count($result->authors); $i++) 
 					{ 
 						if ($i == count($result->authors) - 1)
 						{
-							$mangaauthor .= $result->authors[$i]->name;
+							$authors .= $result->authors[$i]->name;
 						}
 						else
 						{
-							$mangaauthor .= $result->authors[$i]->name . " & ";
+							$authors .= $result->authors[$i]->name . " & ";
 						}
 					}
 				}
+				elseif (count($result->authors) == 1) 
+				{
+					$authors = $result->authors[0]->name;
+				}
 				else
 				{
-					$mangaauthor .= $result->authors[0]->name;
+					$authors = "-";
 				}
-				
-				echo $mangaauthor;
+				echo $authors;
 
 				echo "</td>";
-				echo "<td>" . substr($result->published->from, 0, strpos($result->published->from, "T")) . " to ";
-				if ($result->published->to != "")
+				echo "<td>";
+				if ($result->published->from != "")
 				{
-					echo substr($result->published->to, 0, strpos($result->published->to, "T"));
-					$run_end = substr($result->published->to, 0, strpos($result->published->to, "T"));
+					$run_start = substr($result->published->from, 0, strpos($result->published->from, "T"));
+					echo $run_start;
 				}
 				else
 				{
-					echo " ?";
+					echo "?";
+					$run_start = NULL;
+				}
+				echo " to ";
+				if ($result->published->to != "")
+				{
+					
+					$run_end = substr($result->published->to, 0, strpos($result->published->to, "T"));
+					echo $run_end;
+				}
+				else
+				{
+					echo "?";
 					$run_end = NULL;
 				}
 
@@ -132,8 +193,8 @@
 				echo "<input type='hidden' name='mal_id' id='mal_id' value='" . $result->mal_id . "'/>";
 				echo "<input type='hidden' name='eng_name' id='eng_name' value='" . $result->title . "'/>";
 				echo "<input type='hidden' name='jp_name' id='jp_name' value='" . $result->title_japanese . "'/>";
-				echo "<input type='hidden' name='author' id='author' value='" . $mangaauthor . "'/>";
-				echo "<input type='hidden' name='run_start' id='run_start' value='" . substr($result->published->from, 0, strpos($result->published->from, "T")) . "'/>";
+				echo "<input type='hidden' name='author' id='author' value='" . $authors . "'/>";
+				echo "<input type='hidden' name='run_start' id='run_start' value='" . $run_start . "'/>";
 				echo "<input type='hidden' name='run_end' id='run_end' value='" . $run_end . "'/>";
 				echo "<input type='submit' value='Add To List'/>";
 				echo "</form>";
@@ -150,14 +211,27 @@
 
 		if ($page > 1)
 		{
-			echo "<a href='search.php?page=" . ($page - 1) . "'>Previous Page</a>";
+			if (isset($title) && $title != "")
+			{
+				echo "<a href='search.php?title=$title&page=" . ($page - 1) . "'>Previous Page</a>";
+			}
+			else
+			{
+				echo "<a href='search.php?page=" . ($page - 1) . "'>Previous Page</a>";
+			}
 		}
 
 		if ($pagination->has_next_page == TRUE && $page < $pagination->items->total)
 		{
-			echo "<a href='search.php?page=" . ($page + 1) . "'>Next Page</a>";
+			if (isset($title) && $title != "")
+			{
+				echo "<a href='search.php?title=$title&page=" . ($page + 1) . "'>Next Page</a>";
+			}
+			else
+			{
+				echo "<a href='search.php?page=" . ($page + 1) . "'>Next Page</a>";
+			}
 		}
-		
 	?>
 </body>
 </html>
