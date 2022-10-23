@@ -88,50 +88,48 @@
 		$data = $response_data->data;
 		if (sizeof($data) > 0)
 		{
-			foreach ($data as $d) {
+			foreach ($data as $d) 
+			{
 				$searchresults[] = $d;
 			}
 		}
 
 		if (sizeof($searchresults) > 0)
 		{
+			require_once "settings.php";
+			$conn = new mysqli($host, $user, $pswd, $db);
+
+			//Check if error with connection
+		   	if ($conn->connect_errno)
+		    {
+		       	echo "<p>Failed to connect to database: " . $conn->connect_error . "</p>";
+		        exit();
+		   	}
+
+		    $tablequery = "CREATE TABLE IF NOT EXISTS mangas(
+		    	record_id INT NOT NULL AUTO_INCREMENT,
+		        mal_id INT NOT NULL,
+		        eng_name VARCHAR(100) NOT NULL,
+		        jp_name VARCHAR(100) NOT NULL,
+		        author VARCHAR(30) NOT NULL,
+		        run_start DATE NOT NULL,
+		        run_end DATE,
+		        read_state VARCHAR(20) NOT NULL,
+		        PRIMARY KEY (record_id)
+		    );";
+
+		    $conn->query($tablequery);
+
 			echo "<table>";
-			echo "<tr>
-				<th>Image</th>
-	    		<th>English Name</th>
-	    		<th>Japanese Name</th>
-	    		<th>Author</th>
-	    		<th>Original Run</th>
-	    		<th>Status</th>
-	    		<th>Add To List</th>
-	    	</tr>";
+			echo "<tr><th>Image</th><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Status</th><th>Add To List</th></tr>";
 			foreach ($searchresults as $result)
 			{
 				echo "<tr>";
 				echo "<td><img src='" . $result->images->jpg->small_image_url . "' alt='Image of manga'/>";
-				echo "<td>";
 
-				if ($result->title != "")
-				{
-					echo $result->title;
-				}
-				else
-				{
-					echo "-";
-				}
+				echo($result->title != "" ? "<td>" . $result->title . "</td>" : "-");
 
-				echo "</td>";
-
-				echo "<td>";
-				if ($result->title_japanese != "")
-				{
-					echo $result->title_japanese;
-				}
-				else
-				{
-					echo "-";
-				}
-				echo "</td>";
+				echo($result->title_japanese != "" ? "<td>" . $result->title_japanese . "</td>" : "-");
 
 				echo "<td>";
 				$authors = "";
@@ -188,25 +186,40 @@
 				
 				echo "</td>";
 				echo "<td>" . $result->status . "</td>";
-				echo "<td>";
-				echo "<form method='POST' action='add_manga.php'>";
-				echo "<input type='hidden' name='mal_id' id='mal_id' value='" . $result->mal_id . "'/>";
-				echo "<input type='hidden' name='eng_name' id='eng_name' value='" . $result->title . "'/>";
-				echo "<input type='hidden' name='jp_name' id='jp_name' value='" . $result->title_japanese . "'/>";
-				echo "<input type='hidden' name='author' id='author' value='" . $authors . "'/>";
-				echo "<input type='hidden' name='run_start' id='run_start' value='" . $run_start . "'/>";
-				echo "<input type='hidden' name='run_end' id='run_end' value='" . $run_end . "'/>";
-				echo "<select name='status' id='status'>";
-		    	echo "<option value='Reading'>Reading</option>";
-		    	echo "<option value='Completed'>Completed</option>";
-		    	echo "<option value='On-Hold'>On-Hold</option>";
-		    	echo "<option value='Dropped'>Dropped</option>";
-		    	echo "<option value='Planned To Read'>Planned To Read</option>";
-		    	echo "</select>";
-		    	echo "<br/>";
-				echo "<input type='submit' value='Add To List'/>";
-				echo "</form>";
-				echo "</td>";
+
+				$check = "SELECT * FROM mangas WHERE mal_id = " . $result->mal_id;
+
+				$checkresult = $conn->query($check);
+				if ($checkresult->num_rows > 0)
+				{
+					echo "<td>Already in list</td>";
+				}
+				else
+				{
+					echo "<td>";
+					echo "<form method='POST' action='add_manga.php'>";
+					echo "<input type='hidden' name='mal_id' id='mal_id' value='" . $result->mal_id . "'/>";
+					echo "<input type='hidden' name='eng_name' id='eng_name' value='" . $result->title . "'/>";
+					echo "<input type='hidden' name='jp_name' id='jp_name' value='" . $result->title_japanese . "'/>";
+					echo "<input type='hidden' name='author' id='author' value='" . $authors . "'/>";
+					echo "<input type='hidden' name='run_start' id='run_start' value='" . $run_start . "'/>";
+					echo "<input type='hidden' name='run_end' id='run_end' value='" . $run_end . "'/>";
+					echo "<select name='status' id='status'>";
+			    	echo "<option value='Reading'>Reading</option>";
+			    	echo "<option value='Completed'>Completed</option>";
+			    	echo "<option value='On-Hold'>On-Hold</option>";
+			    	echo "<option value='Dropped'>Dropped</option>";
+			    	echo "<option value='Planned To Read'>Planned To Read</option>";
+			    	echo "</select>";
+			    	echo "<br/>";
+					echo "<input type='submit' value='Add To List'/>";
+					echo "</form>";
+					echo "</td>";
+				}
+				/*
+				
+				*/
+
 				echo "</tr>";
 			}
 		}
