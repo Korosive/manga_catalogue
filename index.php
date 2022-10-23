@@ -15,8 +15,7 @@
 	include "nav.php";
 ?>
 <body>
-	<h1>Home Page</h1>
-	<h2>My Manga List</h2>
+	<h1 class="text-center border-bottom">My Manga List</h2>
 	<?php
 		if (isset($_SESSION['message']))
 		{
@@ -24,9 +23,15 @@
 			unset($_SESSION['message']);
 		}
 	?>
-	<form method="get" action="index.php">
-		<input type="text" name="title" id="title" />
-		<input type="submit" name="Search" />
+	<form class="row row-cols-lg-auto g-3 align-items-center justify-content-center" method="get" action="index.php">
+		<div class="col-12">
+			<div class="input-group">
+				<input class="form-control" type="text" name="title" id="title" />
+			</div>
+		</div>
+		<div class="col-12">
+			<input class="btn btn-primary" type="submit" name="Search" value="Search" />
+		</div>
 	</form>
 	<?php
 		require_once 'settings.php';
@@ -98,7 +103,7 @@
 
 		if (sizeof($searchresults) > 0)
 		{
-			echo "<table>";
+			echo "<table class='table table-striped table-hover table-bordered'>";
 	    	echo "<tr><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Current State</th><th>Change Status?</th><th>Remove</th></tr>";
 	    	foreach ($searchresults as $result) {
 				echo "<tr>";
@@ -109,17 +114,22 @@
 		    	echo "<td>" . $result['read_state'] . "</td>";
 		    	echo "<td>";
 
-		    	echo "<form method='POST' action='change_status.php'>";
+		    	echo "<form class='row row-cols-lg-auto g-3' method='POST' action='change_status.php'>";
 		    	echo "<input type='hidden' name='record_id' id='record_id' value='" . $result['record_id'] . "'/>";
-		    	echo "<select name='status' id='status'>";
+		    	echo "<div class='col-12'>";
+		    	echo "<div class='input-group'>";
+		    	echo "<select class='form-select' name='status' id='status'>";
 		    	echo "<option value='Reading'>Reading</option>";
 		    	echo "<option value='Completed'>Completed</option>";
 		    	echo "<option value='On-Hold'>On-Hold</option>";
 		    	echo "<option value='Dropped'>Dropped</option>";
 		    	echo "<option value='Planned To Read'>Planned To Read</option>";
 		    	echo "</select>";
-		    	echo "<br/>";
-		    	echo "<input type='submit' value='Change Status'/>";
+		    	echo "</div>";
+		    	echo "</div>";
+		    	echo "<div class='col-12'>";
+		    	echo "<input class='btn btn-primary' type='submit' value='Change Status'/>";
+		    	echo "</div>";
 		    	echo "</form>";
 
 		    	echo "</td>";

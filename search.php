@@ -9,6 +9,8 @@
 	<meta name="author" content="Eddie Taing"/>
 	<meta name="description" content="Manga Tracker" />
 	<link rel="stylesheet" type="text/css" href="style.css" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
 	<title>Search Database Page</title>
 </head>
 <?php
@@ -46,9 +48,11 @@
 			unset($_SESSION['message']);
 		}
 	?>
-	<h1>Search Database</h1>
-	<form method="get" action="search.php">
+	<h1 class="text-center border-bottom">Search Database</h1>
+	<form class="row row-cols-lg-auto g-3 align-items-center justify-content-center" method="get" action="search.php">
 		<?php
+			echo "<div class='col-12'>";
+			echo "<div class='input-group'>";
 			if (isset($title))
 			{
 				$inputtitle = "";
@@ -60,14 +64,20 @@
 				{
 					$inputtitle = $title;
 				}
-				echo "<input type='text' name='title' id='title' value='$inputtitle' />";
+				echo "<input class='form-control' type='text' name='title' id='title' value='$inputtitle' />";
 			}
 			else
 			{
-				echo "<input type='text' name='title' id='title' />";
+				echo "<input class='form-control' type='text' name='title' id='title' />";
 			}
+			echo "</div>";
+			echo "</div>";
+
+			echo "<div class='col-12'>";
+			echo "<input class='btn btn-primary' type='submit' name='Search' value='Search' />";
+			echo "</div>";
 		?>
-		<input type="submit" name="Search" value="Search" />
+		
 	</form>
 	<?php
 		
@@ -120,7 +130,7 @@
 
 		    $conn->query($tablequery);
 
-			echo "<table>";
+			echo "<table class='table table-striped table-hover table-bordered'>";
 			echo "<tr><th>Image</th><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Status</th><th>Add To List</th></tr>";
 			foreach ($searchresults as $result)
 			{
@@ -197,29 +207,30 @@
 				else
 				{
 					echo "<td>";
-					echo "<form method='POST' action='add_manga.php'>";
+					echo "<form class='row row-cols-lg-auto g-3' method='POST' action='add_manga.php'>";
 					echo "<input type='hidden' name='mal_id' id='mal_id' value='" . $result->mal_id . "'/>";
 					echo "<input type='hidden' name='eng_name' id='eng_name' value='" . $result->title . "'/>";
 					echo "<input type='hidden' name='jp_name' id='jp_name' value='" . $result->title_japanese . "'/>";
 					echo "<input type='hidden' name='author' id='author' value='" . $authors . "'/>";
 					echo "<input type='hidden' name='run_start' id='run_start' value='" . $run_start . "'/>";
 					echo "<input type='hidden' name='run_end' id='run_end' value='" . $run_end . "'/>";
-					echo "<select name='status' id='status'>";
+					echo "<div class='col-12'>";
+		    		echo "<div class='input-group'>";
+					echo "<select class='form-select' name='status' id='status'>";
 			    	echo "<option value='Reading'>Reading</option>";
 			    	echo "<option value='Completed'>Completed</option>";
 			    	echo "<option value='On-Hold'>On-Hold</option>";
 			    	echo "<option value='Dropped'>Dropped</option>";
 			    	echo "<option value='Planned To Read'>Planned To Read</option>";
 			    	echo "</select>";
-			    	echo "<br/>";
-					echo "<input type='submit' value='Add To List'/>";
+			    	echo "</div>";
+		    		echo "</div>";
+		    		echo "<div class='col-12'>";
+					echo "<input class='btn btn-primary' type='submit' value='Add To List'/>";
+					echo "</div>";
 					echo "</form>";
 					echo "</td>";
 				}
-				/*
-				
-				*/
-
 				echo "</tr>";
 			}
 		}
@@ -230,29 +241,55 @@
 
 		$pagination = $response_data->pagination;
 
+		echo "<nav aria-label='Page pagination'>";
+		echo "<ul class='pagination justify-content-center'>";
+
 		if ($page > 1)
 		{
 			if (isset($title) && $title != "")
 			{
-				echo "<a href='search.php?title=$title&page=" . ($page - 1) . "'>Previous Page</a>";
+				echo "<li class='page-item'>";
+				echo "<a class='page-link' href='search.php?title=$title&page=" . ($page - 1) . "'>Previous</a>";
+				echo "</li>";
 			}
 			else
 			{
-				echo "<a href='search.php?page=" . ($page - 1) . "'>Previous Page</a>";
+				echo "<li class='page-item'>";
+				echo "<a class='page-link' href='search.php?page=" . ($page - 1) . "'>Previous</a>";
+				echo "</li>";
 			}
+		}
+		else
+		{
+			echo "<li class='page-item disabled'>";
+			echo "<a class='page-link' href='#'>Previous</a>";
+			echo "</li>";
 		}
 
 		if ($pagination->has_next_page == TRUE && $page < $pagination->items->total)
 		{
 			if (isset($title) && $title != "")
 			{
-				echo "<a href='search.php?title=$title&page=" . ($page + 1) . "'>Next Page</a>";
+				echo "<li class='page-item'>";
+				echo "<a class='page-link' href='search.php?title=$title&page=" . ($page + 1) . "'>Next Page</a>";
+				echo "</li>";
 			}
 			else
 			{
-				echo "<a href='search.php?page=" . ($page + 1) . "'>Next Page</a>";
+				echo "<li class='page-item'>";
+				echo "<a class='page-link' href='search.php?page=" . ($page + 1) . "'>Next Page</a>";
+				echo "</li>";
 			}
 		}
+		else
+		{
+			echo "<li class='page-item disabled'>";
+			echo "<a class='page-link' href='#'>Next</a>";
+			echo "</li>";
+		}
+
+		echo "</ul>";
+		echo "</nav>";
 	?>
 </body>
 </html>
