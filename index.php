@@ -99,7 +99,7 @@
 		if (sizeof($searchresults) > 0)
 		{
 			echo "<table>";
-	    	echo "<tr><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Current State</th><th>Change Status?</th></tr>";
+	    	echo "<tr><th>English Name</th><th>Japanese Name</th><th>Author</th><th>Original Run</th><th>Current State</th><th>Change Status?</th><th>Remove</th></tr>";
 	    	foreach ($searchresults as $result) {
 				echo "<tr>";
 		    	echo "<td>" . $result['eng_name'] . "</td>";
@@ -123,6 +123,7 @@
 		    	echo "</form>";
 
 		    	echo "</td>";
+		    	echo "<td><a href='remove.php?id=" . $result['record_id'] . "'>X</a></td>";
 		    	echo "</tr>";
 			}
 			echo "</table>";
