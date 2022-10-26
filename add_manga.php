@@ -23,9 +23,8 @@
 			$run_end = $_POST['run_end'];
 			$status = $_POST['status'];
 
-			$read_state = "Reading";
 			$insertquery = "INSERT INTO mangas (mal_id, eng_name, jp_name, author, run_start, run_end, read_state) VALUES
-				($mal_id, '$eng_name', '$jp_name', '$author', '$run_start', '$run_end', '$read_state')";
+				($mal_id, '$eng_name', '$jp_name', '$author', '$run_start', '$run_end', '$status')";
 
 
 			if ($conn->query($insertquery)=== TRUE)

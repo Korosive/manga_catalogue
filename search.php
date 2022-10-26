@@ -31,16 +31,13 @@
 		if (isset($_GET['title']))
 		{
 			$title = $_GET['title'];
-			if (strpos($title, " ") !== FALSE)
-			{
-				$title = str_replace(" ", "+", $title);
-			}
 			$api_url = "https://api.jikan.moe/v4/manga?letter=$title&limit=10&page=$page";	
 		}
 		else
 		{
 			$api_url = "https://api.jikan.moe/v4/manga?limit=10&page=$page";
 		}
+		echo "$api_url";
 
 		if (isset($_SESSION['message']))
 		{
@@ -93,9 +90,10 @@
 
 		$searchresults = array();
 
-		$json_data = file_get_contents($api_url);
-		$response_data = json_decode($json_data);
-		$data = $response_data->data;
+			$json_data = file_get_contents($api_url);
+			$response_data = json_decode($json_data);
+			$data = $response_data->data;
+		
 		if (sizeof($data) > 0)
 		{
 			foreach ($data as $d) 
