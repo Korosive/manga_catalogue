@@ -37,7 +37,6 @@
 		{
 			$api_url = "https://api.jikan.moe/v4/manga?limit=10&page=$page";
 		}
-		echo "$api_url";
 
 		if (isset($_SESSION['message']))
 		{
@@ -137,7 +136,20 @@
 
 				echo($result->title != "" ? "<td>" . $result->title . "</td>" : "-");
 
-				echo($result->title_japanese != "" ? "<td>" . $result->title_japanese . "</td>" : "-");
+				$jp_title = "";
+				//echo "<p>" . $result->title_japanese . "</p>";
+				if ($result->title_japanese == "" || $result->title_japanese == NULL)
+				{
+					echo "<td>-</td>";
+					$jp_title = "-";
+				}
+				else
+				{
+					echo "<td>" . $result->title_japanese . "</td>";
+					$jp_title = $result->title_japanese;
+				}
+				//echo($result->title_japanese != "" && $result->title_japanese != "-NULL" ? "<td>" . $result->title_japanese . "</td>" : "-");
+				var_dump($result->title_japanese);
 
 				echo "<td>";
 				$authors = "";
@@ -208,7 +220,7 @@
 					echo "<form class='row row-cols-lg-auto g-3' method='POST' action='add_manga.php'>";
 					echo "<input type='hidden' name='mal_id' id='mal_id' value='" . $result->mal_id . "'/>";
 					echo "<input type='hidden' name='eng_name' id='eng_name' value='" . $result->title . "'/>";
-					echo "<input type='hidden' name='jp_name' id='jp_name' value='" . $result->title_japanese . "'/>";
+					echo "<input type='hidden' name='jp_name' id='jp_name' value='" . $jp_title . "'/>";
 					echo "<input type='hidden' name='author' id='author' value='" . $authors . "'/>";
 					echo "<input type='hidden' name='run_start' id='run_start' value='" . $run_start . "'/>";
 					echo "<input type='hidden' name='run_end' id='run_end' value='" . $run_end . "'/>";
