@@ -110,7 +110,30 @@
 		    	echo "<td>" . $result['eng_name'] . "</td>";
 		    	echo "<td>" . $result['jp_name'] . "</td>";
 		    	echo "<td>" . $result['author'] . "</td>";
-		    	echo "<td>" . date("d/m/Y", strtotime($result['run_start'])) . " - " . date("d/m/Y", strtotime($result['run_end'])) . "</td>";
+		    	echo "<td>";
+
+		    	if ($result['run_start'] == NULL)
+		    	{
+		    		echo "?";
+		    	}
+		    	else
+		    	{
+		    		echo date("d/m/Y", strtotime($result['run_start']));
+		    	}
+
+		    	echo " - ";
+
+		    	if ($result['run_end'] == NULL)
+		    	{
+		    		echo "?";
+		    	}
+		    	else
+		    	{
+		    		echo date("d/m/Y", strtotime($result['run_end']));
+		    	}
+
+
+		    	echo "</td>";
 		    	echo "<td>" . $result['read_state'] . "</td>";
 		    	echo "<td>";
 

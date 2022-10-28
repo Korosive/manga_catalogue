@@ -148,8 +148,6 @@
 					echo "<td>" . $result->title_japanese . "</td>";
 					$jp_title = $result->title_japanese;
 				}
-				//echo($result->title_japanese != "" && $result->title_japanese != "-NULL" ? "<td>" . $result->title_japanese . "</td>" : "-");
-				var_dump($result->title_japanese);
 
 				echo "<td>";
 				$authors = "";
